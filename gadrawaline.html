@@ -2,53 +2,97 @@
 <html>
 
     <body>
+        <canvas></canvas>
     </body>
             <script type='text/javascript'>
             "use strict";
 
-            class Point{
-                constructor(x, y){
-                    this.x = x;
-                    this.y = y
-                }
-                diff(point){
-                    return Math.abs(point.x - this.x) + Math.abs(point.y - this.y);
+            const POINT = 'point';
+            const LINE = 'line';
+
+            class Draw{
+                draw(){
+                    throw 'It should be overwritten'; 
                 }
             }
             
-            class PointFactory{
-                static getInstance(x, y){
-                    return new Point(x, y);
+            class DrawFactory{
+                static getInstance(drawType){
+                    switch(drawType){
+                        case POINT:
+                            return new Point();
+                        case LINE:
+                            return new Line();
+                        default:
+                            throw 'The type is undefined';
+                    }
                 }
             }
 
-            class LineFactory{
-                static getInstance(points){
-                    return new Line(points);
+            class Point extends Draw{
+                setPosition(x, y){
+                    this.setted = true;
+                    this.x = x;
+                    this.y = y
+                    return this;
+                }
+                diff(point){
+                    if(!this.setted)
+                        throw "Point didn't receive the position";
+                    return Math.abs(point.x - this.x) + Math.abs(point.y - this.y);
+                }
+                draw(){
                 }
             }
 
-            class Line{
-                constructor(points){
+            class Line extends Draw{
+                setPoints(points){
+                    this.setted = true;
                     this.points = points
                     this.cost = 10000;
+                    return this;
                 }
                 calcCost(idealLine){
+                    if(!this.setted)
+                        throw "The line is not defined";
+                    if(idealLine.points.length != this.points.length)
+                        throw "The lines didn't have the same size";
                     var total = 0;
                     for (var i = 0; i < this.points.length; i++) {
                         total += this.points[i].diff(idealLine.points[i]);
                     };
                     this.cost = total;
                 }
-
+                bornRandom(size){
+                    this.points = []
+                    while(size--){
+                        this.points.push(DrawFactory.getInstance(POINT).setPosition(Math.round(100 * Math.random()), Math.round(100 * Math.random()))); 
+                    }
+                    return this;
+                }
+                draw(){
+                }
             }
 
-            let idealLine = LineFactory.getInstance([
-                PointFactory.getInstance(0,0), 
-                PointFactory.getInstance(1,1), 
-                PointFactory.getInstance(2,2), 
-                PointFactory.getInstance(3,3)]);
 
+            class Population{
+                constructor(objective, size){
+                    this.members = [];
+                    this.objective = objective;
+                    this.generation = 0;
+                    while(size--){
+                        this.members.push(DrawFactory.getInstance(LINE).bornRandom(this.objective.points.length))
+                    }
+                }
+            }
+
+            let idealLine = DrawFactory.getInstance(LINE).setPoints([
+                DrawFactory.getInstance(POINT).setPosition(0,0), 
+                DrawFactory.getInstance(POINT).setPosition(1,1), 
+                DrawFactory.getInstance(POINT).setPosition(2,2), 
+                DrawFactory.getInstance(POINT).setPosition(3,3)]);
+ 
+            let p = new Population(idealLine, 10);
 
            </script>
 </html>
