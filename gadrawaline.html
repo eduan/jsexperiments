@@ -74,10 +74,9 @@
                     if(idealLine.points.length != this.points.length)
                         throw "The lines must match the length";
                     var halfPart = (otherLine.points.length/2);
-                    console.log(idealLine.points.slice(0,halfPart));
-                    console.log(idealLine.points.slice(halfPart, otherLine.points.length));
-                    console.log(this.points.slice(0,halfPart));
-                    console.log(this.points.slice(halfPart, otherLine.points.length));
+                    return [
+                    DrawFactory.getInstance(LINE).setPoints(idealLine.points.slice(0,halfPart).concat(this.points.slice(halfPart, otherLine.points.length))),
+                    DrawFactory.getInstance(LINE).setPoints(this.points.slice(0,halfPart).concat(idealLine.points.slice(halfPart, otherLine.points.length)))];
                 }
                 draw(){
                 }
