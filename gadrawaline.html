@@ -92,6 +92,11 @@
                         this.members.push(DrawFactory.getInstance(LINE).bornRandom(this.objective.points.length))
                     }
                 }
+                nextGeneration(){
+                    for(var i in this.members){
+                        this.members[i].calcCost(this.objective)
+                    }
+                }
             }
 
             let idealLine = DrawFactory.getInstance(LINE).setPoints([
