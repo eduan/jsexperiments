@@ -5,25 +5,50 @@
     </body>
             <script type='text/javascript'>
             "use strict";
+
             class Point{
-            	constructor(x, y){
-            		this.x = x;
-            		this.y = y
-            	}
+                constructor(x, y){
+                    this.x = x;
+                    this.y = y
+                }
+                diff(point){
+                    return Math.abs(point.x - this.x) + Math.abs(point.y - this.y);
+                }
             }
+            
+            class PointFactory{
+                static getInstance(x, y){
+                    return new Point(x, y);
+                }
+            }
+
+            class LineFactory{
+                static getInstance(points){
+                    return new Line(points);
+                }
+            }
+
             class Line{
                 constructor(points){
-                	this.points = points
-                	this.cost = 10000;
+                    this.points = points
+                    this.cost = 10000;
                 }
-                calcCost(){
-                	total = 0;
-                	for (var i = 0; i < this.points.length; i++) {
-
-                	};
+                calcCost(idealLine){
+                    var total = 0;
+                    for (var i = 0; i < this.points.length; i++) {
+                        total += this.points[i].diff(idealLine.points[i]);
+                    };
+                    this.cost = total;
                 }
 
             }
+
+            let idealLine = LineFactory.getInstance([
+                PointFactory.getInstance(0,0), 
+                PointFactory.getInstance(1,1), 
+                PointFactory.getInstance(2,2), 
+                PointFactory.getInstance(3,3)]);
+
 
            </script>
 </html>
