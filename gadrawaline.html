@@ -56,7 +56,7 @@
                     if(!this.setted)
                         throw "The line is not defined";
                     if(idealLine.points.length != this.points.length)
-                        throw "The lines didn't have the same size";
+                        throw "The lines must match the length";
                     var total = 0;
                     for (var i = 0; i < this.points.length; i++) {
                         total += this.points[i].diff(idealLine.points[i]);
@@ -64,11 +64,20 @@
                     this.cost = total;
                 }
                 bornRandom(size){
-                    this.points = []
+                    var points = []
                     while(size--){
-                        this.points.push(DrawFactory.getInstance(POINT).setPosition(Math.round(100 * Math.random()), Math.round(100 * Math.random()))); 
+                        points.push(DrawFactory.getInstance(POINT).setPosition(Math.round(100 * Math.random()), Math.round(100 * Math.random()))); 
                     }
-                    return this;
+                    return this.setPoints(points);
+                }
+                cross(otherLine){
+                    if(idealLine.points.length != this.points.length)
+                        throw "The lines must match the length";
+                    var halfPart = (otherLine.points.length/2);
+                    console.log(idealLine.points.slice(0,halfPart));
+                    console.log(idealLine.points.slice(halfPart, otherLine.points.length));
+                    console.log(this.points.slice(0,halfPart));
+                    console.log(this.points.slice(halfPart, otherLine.points.length));
                 }
                 draw(){
                 }
@@ -91,7 +100,9 @@
                 DrawFactory.getInstance(POINT).setPosition(1,1), 
                 DrawFactory.getInstance(POINT).setPosition(2,2), 
                 DrawFactory.getInstance(POINT).setPosition(3,3)]);
- 
+            
+            let randomLine = DrawFactory.getInstance(LINE).bornRandom(idealLine.points.length);
+
             let p = new Population(idealLine, 10);
 
            </script>
