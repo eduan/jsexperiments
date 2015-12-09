@@ -2,7 +2,7 @@
 <html>
 
     <body>
-        <canvas id="escopo" width="300" height="150" style="border:1px solid #d3d3d3;">
+        <canvas id="escopo" width="1200" height="650" style="border:1px solid #d3d3d3;">
     </body>
             <script type='text/javascript'>
             "use strict";
@@ -10,13 +10,36 @@
             const POINT = 'point';
             const LINE = 'line';
             const PROBABILITY = 0.5;
-
+            const COLORS = ['red', 'green', 'blue', 'olive', 'gray', 'yellow', 'orange', 'navy', 'purple', 'royalblue'];
             class Draw{
+                constructor(){
+                    this.offsetx = 0;
+                    this.offsety = 0;   
+                    this.color = 'black';  
+                }
                 draw(){
                     throw 'It should be overwritten'; 
                 }
+                setColor(color){
+                    this.color = color;
+                    return this;
+                }
+                setOffset(x, y){
+                    this.offsetx = x;
+                    this.offsety = y;
+                    return this;
+                }
             }
             
+            class Context{
+                static getContext(){
+                   return document.getElementById("escopo").getContext("2d");
+                }
+                static clean(){
+                    this.getContext().clearRect(0, 0, 1200, 650);
+                }
+            }
+
             class DrawFactory{
                 static getInstance(drawType){
                     switch(drawType){
@@ -67,7 +90,7 @@
                 bornRandom(size){
                     var points = []
                     while(size--){
-                        points.push(DrawFactory.getInstance(POINT).setPosition(Math.round(100 * Math.random()), Math.round(100 * Math.random()))); 
+                        points.push(DrawFactory.getInstance(POINT).setPosition(Math.round(300 * Math.random()), Math.round(300 * Math.random()))); 
                     }
                     return this.setPoints(points);
                 }
@@ -84,19 +107,19 @@
                     if(Math.random() > PROBABILITY)
                         return;
                     var randomPoint = Math.floor(Math.random() * this.points.length);
-                    var variationx = Math.random() <= 0.5 ? 0 : (Math.random() <= 0.5 ? -1 : 1);
-                    var variationy = Math.random() <= 0.5 ? 0 : (Math.random() <= 0.5 ? -1 : 1);
+                    var variationx = Math.random() <= PROBABILITY ? 0 : (Math.random() <= PROBABILITY ? -1 : 1);
+                    var variationy = Math.random() <= PROBABILITY ? 0 : (Math.random() <= PROBABILITY ? -1 : 1);
                     this.points[randomPoint] = DrawFactory.getInstance(POINT).setPosition(this.points[randomPoint].x + variationx, this.points[randomPoint].y + variationy);
                 }
                 draw(){
-                    var escopo = document.getElementById("escopo").getContext("2d");
+                    var escopo = Context.getContext();
                     escopo.beginPath();
-                    escopo.moveTo(this.points[0].x, this.points[0].x);
+                    escopo.moveTo(this.points[0].x + this.offsetx, this.points[0].y + this.offsety);
+                    escopo.strokeStyle = this.color;
                     for (var i = 1; i < this.points.length; i++) {
-                        escopo.lineTo(this.points[i].x, this.points[i].y)
+                        escopo.lineTo(this.points[i].x  + this.offsetx, this.points[i].y + this.offsety)
                     }
                     escopo.stroke();
-                    console.log("cost=" + this.cost)
                 }
             }
 
@@ -118,11 +141,11 @@
                 }
 
                 nextGeneration(){
-                    document.getElementById("escopo").getContext("2d").clearRect(0, 0, 300, 150);
-                    this.objective.draw();
+                    Context.clean();
+                    this.objective.setOffset(600, 200).draw();
                     for(var i in this.members){
                         this.members[i].calcCost(this.objective);
-                        this.members[i].draw();
+                        this.members[i].setOffset(200, i*50).setColor(COLORS[i]).draw();
                     }
                     this.sortByCost();
                     var children = this.members[0].cross(this.members[1]);
@@ -130,14 +153,18 @@
                     for(var i in this.members){
                         this.members[i].mutate()
                         this.members[i].calcCost(this.objective);
-                        if(this.members[i].cost < 1){
+                        if(this.members[i].cost == 0){
+                            Context.getContext().font = "20px Arial";
+                            Context.getContext().fillStyle = COLORS[i];
+                            Context.getContext().fillText("Ideal line found, line color: " +  COLORS[i] , 600, 400);
+                            Context.getContext().fillText("Genetarion: " + this.generation, 600, 440);
                             this.sortByCost();
                             return true;
                         }
                     }
                     this.generation++;
                     var that = this;
-                    setTimeout(function(){ that.nextGeneration(); },10);
+                    setTimeout(function(){ that.nextGeneration(); }, 1);
                 }
             }
 
