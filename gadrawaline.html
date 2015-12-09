@@ -84,18 +84,19 @@
                     if(Math.random() > PROBABILITY)
                         return;
                     var randomPoint = Math.floor(Math.random() * this.points.length);
-                    var variation = Math.random() <= 0.5 ? -1 : 1;
-                    this.points[randomPoint] = DrawFactory.getInstance(POINT).setPosition(this.points[randomPoint].x + variation, this.points[randomPoint].y + variation);
+                    var variationx = Math.random() <= 0.5 ? 0 : (Math.random() <= 0.5 ? -1 : 1);
+                    var variationy = Math.random() <= 0.5 ? 0 : (Math.random() <= 0.5 ? -1 : 1);
+                    this.points[randomPoint] = DrawFactory.getInstance(POINT).setPosition(this.points[randomPoint].x + variationx, this.points[randomPoint].y + variationy);
                 }
                 draw(){
                     var escopo = document.getElementById("escopo").getContext("2d");
                     escopo.beginPath();
-                    escopo.strokeStyle="#FF0000";
                     escopo.moveTo(this.points[0].x, this.points[0].x);
                     for (var i = 1; i < this.points.length; i++) {
                         escopo.lineTo(this.points[i].x, this.points[i].y)
                     }
                     escopo.stroke();
+                    console.log("cost=" + this.cost)
                 }
             }
 
@@ -136,7 +137,7 @@
                     }
                     this.generation++;
                     var that = this;
-            //        setTimeout(function() { that.nextGeneration(); } , 1000);
+                    setTimeout(function(){ that.nextGeneration(); },10);
                 }
             }
 
@@ -149,8 +150,7 @@
             let randomLine = DrawFactory.getInstance(LINE).bornRandom(idealLine.points.length);
 
             let p = new Population(idealLine, 10);
-            
-            setInterval(function(){p.nextGeneration()},100);
+            p.nextGeneration()
 
            </script>
 </html>
