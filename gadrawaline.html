@@ -66,6 +66,10 @@
                     return Math.abs(point.x - this.x) + Math.abs(point.y - this.y);
                 }
                 draw(){
+                    var escopo = Context.getContext();
+                    escopo.beginPath();
+                    escopo.fillRect(this.x + this.offsetx, this.y + this.offsety,1,1)
+                    escopo.stroke();
                 }
             }
 
