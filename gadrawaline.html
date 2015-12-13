@@ -174,9 +174,11 @@
 
             let idealLine = DrawFactory.getInstance(LINE).setPoints([
                 DrawFactory.getInstance(POINT).setPosition(0,0), 
-                DrawFactory.getInstance(POINT).setPosition(75, 40), 
-                DrawFactory.getInstance(POINT).setPosition(150, 80), 
-                DrawFactory.getInstance(POINT).setPosition(300, 160)]);
+                DrawFactory.getInstance(POINT).setPosition(100, 0), 
+                DrawFactory.getInstance(POINT).setPosition(100, 100), 
+                DrawFactory.getInstance(POINT).setPosition(0, 100),
+                DrawFactory.getInstance(POINT).setPosition(0, 0),
+                ]);
             
             let randomLine = DrawFactory.getInstance(LINE).bornRandom(idealLine.points.length);
 
