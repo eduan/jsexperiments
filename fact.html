@@ -1,0 +1,33 @@
+
+
+
+<html>
+
+    <body>
+    </body>
+            <script type='text/javascript'>
+            function sortNumber(a, b) {return a - b}
+            function nextBigger(originalString){
+                var stringSplitted = originalString.toString().split('');
+                for (var i = stringSplitted.length -1; i > 0; i--) {
+                    if(stringSplitted[i] > stringSplitted[i - 1])
+                        break;
+                }
+                if(i == 0) return -1;
+                var vector = stringSplitted[i-1], small = i;
+                for (var j = i+1; j < stringSplitted.length; j++) {
+                    if(stringSplitted[j] > vector && stringSplitted[j] < stringSplitted[small])
+                        small = j;
+                }
+                stringSplitted.splice(i-1, 1, stringSplitted[small])
+                stringSplitted.splice(small, 1, vector)
+                var newString = stringSplitted.slice(i).sort(sortNumber);
+                return parseInt(stringSplitted.slice(0, i).concat(newString).join(''));
+            }
+            console.log(nextBigger(1234567890));
+            console.log(nextBigger(59884848459853));
+            console.log(nextBigger(144));
+            console.log(nextBigger(2017));
+            console.log(nextBigger(513));
+           </script>
+</html>
